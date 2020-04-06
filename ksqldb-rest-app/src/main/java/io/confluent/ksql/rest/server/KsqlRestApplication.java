@@ -92,6 +92,7 @@ import io.confluent.ksql.security.KsqlAuthorizationValidatorFactory;
 import io.confluent.ksql.security.KsqlDefaultSecurityExtension;
 import io.confluent.ksql.security.KsqlSecurityContext;
 import io.confluent.ksql.security.KsqlSecurityExtension;
+import io.confluent.ksql.services.KafkaClusterUtil;
 import io.confluent.ksql.services.LazyServiceContext;
 import io.confluent.ksql.services.ServiceContext;
 import io.confluent.ksql.services.SimpleKsqlClient;
@@ -700,7 +701,10 @@ public final class KsqlRestApplication extends ExecutableApplication<KsqlRestCon
 
     final KsqlConfig ksqlConfig = new KsqlConfig(restConfig.getKsqlConfigProperties());
 
-    MetricCollectors.addConfigurableReporter(ksqlConfig);
+
+    final String ksqlClusterId = KafkaClusterUtil.getKafkaClusterId(serviceContext);
+    MetricCollectors.addConfigurableReporter(ksqlConfig,
+            ksqlClusterId + ":" + ksqlConfig.getString("ksql.service.id"));
 
     final ProcessingLogConfig processingLogConfig
         = new ProcessingLogConfig(restConfig.getOriginals());

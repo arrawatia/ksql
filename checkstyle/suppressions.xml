@@ -47,4 +47,6 @@
       The reason code comments are preferred is that they work better with IDE plugins such as
       IDEA CheckStyle.
   -->
+  <suppress checks="CyclomaticComplexity|BooleanExpressionComplexity|ClassDataAbstractionCoupling"
+            files="(MetricCollectors).java"/>
 </suppressions>

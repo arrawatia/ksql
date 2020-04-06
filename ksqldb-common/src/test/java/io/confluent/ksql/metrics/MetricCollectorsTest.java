@@ -76,7 +76,7 @@ public class MetricCollectorsTest {
     when(ksqlConfig.getConfiguredInstances(any(), any()))
         .thenReturn(Collections.singletonList(mockReporter));
 
-    MetricCollectors.addConfigurableReporter(ksqlConfig);
+    MetricCollectors.addConfigurableReporter(ksqlConfig, "ksql-id");
     final List<MetricsReporter> reporters = MetricCollectors.getMetrics().reporters();
     assertThat(reporters, hasItem(mockReporter));
   }

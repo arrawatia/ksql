@@ -25,10 +25,13 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import org.apache.kafka.common.metrics.JmxReporter;
 import org.apache.kafka.common.metrics.MetricConfig;
 import org.apache.kafka.common.metrics.Metrics;
+import org.apache.kafka.common.metrics.MetricsContext;
 import org.apache.kafka.common.metrics.MetricsReporter;
+
 import org.apache.kafka.common.utils.SystemTime;
 
 /**
@@ -91,10 +94,19 @@ public final class MetricCollectors {
     return finalId;
   }
 
-  public static void addConfigurableReporter(final KsqlConfig ksqlConfig) {
+  public static void addConfigurableReporter(final KsqlConfig ksqlConfig,
+                                             final String ksqlClusterId) {
     final List<MetricsReporter> reporters = ksqlConfig.getConfiguredInstances(
         KsqlConfig.METRIC_REPORTER_CLASSES_CONFIG,
         MetricsReporter.class);
+    System.out.println("***Testing from KSQL");
+
+    final MetricsContext metricsContext = new MetricsContext();
+    metricsContext.metadata().put("metrics.context.values.connect_cluster_id", ksqlClusterId);
+
+    for (MetricsReporter reporter : reporters) {
+      reporter.contextChange(metricsContext);
+    }
     for (final MetricsReporter reporter: reporters) {
       metrics.addReporter(reporter);
     }

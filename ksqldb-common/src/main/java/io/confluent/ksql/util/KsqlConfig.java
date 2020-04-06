@@ -31,6 +31,7 @@ import io.confluent.ksql.testing.EffectivelyImmutable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -773,7 +774,25 @@ public class KsqlConfig extends AbstractConfig {
   }
 
   public Map<String, Object> getKsqlAdminClientConfigProps() {
-    return getConfigsFor(AdminClientConfig.configNames());
+    final Map<String, Object> map = new HashMap<>();
+    final Map<String, Object> adminClientConfig = getConfigsFor(AdminClientConfig.configNames());
+    map.putAll(adminClientConfig);
+
+    final Map<String, Object> metricConfig = getMetricReporterConfigProps();
+    if (!metricConfig.isEmpty()) {
+      map.putAll(metricConfig);
+    }
+
+    return Collections.unmodifiableMap(map);
+  }
+
+  public Map<String, Object> getMetricReporterConfigProps() {
+    final Set<String> names = new HashSet<>();
+    names.add("metric.reporters");
+    names.add("confluent.metrics.reporter.topic.replicas");
+    names.add("confluent.telemetry.exporter.kafka.producer.bootstrap.servers");
+    names.add("confluent.telemetry.exporter.kafka.topic.replicas");
+    return getConfigsFor(names);
   }
 
   public Map<String, Object> getProducerClientConfigProps() {

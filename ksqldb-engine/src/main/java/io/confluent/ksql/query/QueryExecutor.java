@@ -364,6 +364,15 @@ public final class QueryExecutor {
         StreamsConfig.producerPrefix(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG),
         ProducerCollector.class.getCanonicalName()
     );
+    //
+    System.out.println("****" + ksqlConfig.originals());
+    for (String key : ksqlConfig.originals().keySet()) {
+      if (key.startsWith("metric.reporters")) {
+        newStreamsProperties.put(key, ksqlConfig.originals().get(key));
+      } else if (key.startsWith("confluent.telemetry")) {
+        newStreamsProperties.put(key, ksqlConfig.originals().get(key));
+      }
+    }
     return newStreamsProperties;
   }
 

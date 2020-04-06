@@ -33,6 +33,7 @@ for project in ksqldb-engine ksqldb-examples ksqldb-rest-app ksqldb-cli ksqldb-f
       fi
     done
 done
+KSQL_CLASSPATH="$KSQL_CLASSPATH:/Users/xdu/work/ce-kafka/ce-metrics/build/libs/*:/Users/xdu/work/ksql/share/java/*"
 
 # Production jars - each one is prepended so they will appear in reverse order.  KSQL jars take precedence over other stuff passed in via CLASSPATH env var
 for library in "confluent-common" "ksqldb-examples" "rest-utils" "ksqldb-engine" "ksqldb-rest-app" "ksqldb-cli" "ksqldb-functional-tests" "ksqldb" "monitoring-interceptors" "confluent-security/ksql"; do
